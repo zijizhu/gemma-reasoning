@@ -108,21 +108,20 @@ def reformat_fol(fol):
 def evaluate(premises, conclusion):
     premises = [reformat_fol(p) for p in premises]
     conclusion = reformat_fol(conclusion)
-
-    c = read_expr(conclusion)
-    p_list = []
     try:
+        c = read_expr(conclusion)
+        p_list = []
         for p in premises:
             p_list.append(read_expr(p))
             truth_value = prover.prove(c, p_list)
+            if truth_value:
+                return "True"
+            else:
+                neg_c = read_expr("-(" + conclusion + ")")
+                negation_true = prover.prove(neg_c, p_list)
+                if negation_true:
+                    return "False"
+                else:
+                    return "Uncertain"
     except:
         return "Uncertain"
-    if truth_value:
-        return "True"
-    else:
-        neg_c = read_expr("-(" + conclusion + ")")
-        negation_true = prover.prove(neg_c, p_list)
-        if negation_true:
-            return "False"
-        else:
-            return "Uncertain"
