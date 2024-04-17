@@ -111,9 +111,12 @@ def evaluate(premises, conclusion):
 
     c = read_expr(conclusion)
     p_list = []
-    for p in premises:
-        p_list.append(read_expr(p))
-    truth_value = prover.prove(c, p_list)
+    try:
+        for p in premises:
+            p_list.append(read_expr(p))
+            truth_value = prover.prove(c, p_list)
+    except:
+        return "Uncertain"
     if truth_value:
         return "True"
     else:
