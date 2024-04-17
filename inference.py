@@ -61,4 +61,4 @@ if __name__ == '__main__':
         results.append(res)
     
     with open(args.outdir, 'w+') as fp:
-        json.dump(results, f'results/{args.model.split('/')[-1]}_{args.dataset}_results.json')
+        json.dump(results, f'results/{args.model.split("/")[-1]}_{args.dataset}_results.json')
