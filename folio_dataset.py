@@ -40,3 +40,10 @@ def create_prompt(example, instruction='', example_prompt_str=''):
                 '<CONCLUSION>\n', example['conclusion'], '\n<CONCLUSION>\n', '<EVALUATE>\n']
     example['prompt'] = instruction + example_prompt_str + ''.join(question)
     return example
+
+
+def creat_prompt_proofwriter(example, instruction='', example_prompt_str=''):
+    assert instruction and example_prompt_str
+    question = ['<PREMISES>\n', example['premises'], '\n<PREMISES>\n',
+                '<CONCLUSION>\n', '\n'.join(example['conclusion']), '\n<CONCLUSION>\n', '<EVALUATE>\n']
+    return instruction + example_prompt_str + ''.join(question)
