@@ -36,7 +36,7 @@ if __name__ == '__main__':
             answers.append(question_dict[f'Q{i}']['answer'])
         all_examples.append(dict(
             premises=premises,
-            conclusions=questions,
+            conclusion=questions,
             labels=answers
         ))
     
