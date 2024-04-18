@@ -45,6 +45,7 @@ if __name__ == '__main__':
         example['prompt'] = creat_prompt_proofwriter(example=example,
                                                      instruction=instruction,
                                                      example_prompt_str=example_prompt_str)
+        example['num_conclusion'] = len(example['conclusion'])
 
     tokenizer = AutoTokenizer.from_pretrained(args.model)
     model = AutoModelForCausalLM.from_pretrained(
@@ -64,10 +65,14 @@ if __name__ == '__main__':
                 continue
             llm_translated_fols.append(line[5:])
 
-        res = evaluate([convert_to_nltk_rep(s) for s in llm_translated_fols[:-1]],
-                       convert_to_nltk_rep(llm_translated_fols[-1]))
-        res = evaluate(llm_translated_fols[:-1], llm_translated_fols[-1])
-        results.append(res)
-    
+        example_results = []
+
+        conc_start_idx = -example['num_conclusion']
+        all_premises = [convert_to_nltk_rep(s) for s in llm_translated_fols[:conc_start_idx]]
+        for conc in llm_translated_fols[conc_start_idx:]:
+            res = evaluate(all_premises, convert_to_nltk_rep(conc))
+            example_results.append(res)
+        
+        results.append(example_results)
         with open(f'{args.model.split("/")[-1]}_depth{args.depth}_results.json', 'w+') as fp:
             json.dump(results, fp=fp)
