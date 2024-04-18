@@ -40,6 +40,8 @@ if __name__ == '__main__':
             conclusions=questions,
             labels=answers
         ))
+    
+    all_examples = all_examples[:100]
     for example in all_examples:
         example['prompt'] = creat_prompt_proofwriter(example=example,
                                                      instruction=instruction,
