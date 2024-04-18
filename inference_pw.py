@@ -7,14 +7,13 @@ from fol import evaluate
 from lightning import seed_everything
 from datasets import load_dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from folio_dataset import instruction, get_example_prompt_str, fol_to_nltk, creat_prompt_proofwriter
+from folio_dataset import instruction, get_example_prompt_str, fol_to_nltk, creat_prompt_proofwriter, convert_to_nltk_rep
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Logical Inference with FOL Translation')
     parser.add_argument('--model', type=str)
-    parser.add_argument('--dataset_dir', type=str)
-    parser.add_argument('--depth')
+    parser.add_argument('--depth', type=int)
     args = parser.parse_args()
 
     seed_everything(42)
@@ -65,8 +64,10 @@ if __name__ == '__main__':
                 continue
             llm_translated_fols.append(line[5:])
 
+        res = evaluate([convert_to_nltk_rep(s) for s in llm_translated_fols[:-1]],
+                       convert_to_nltk_rep(llm_translated_fols[-1]))
         res = evaluate(llm_translated_fols[:-1], llm_translated_fols[-1])
         results.append(res)
     
-        with open(f'results/{args.model.split("/")[-1]}_{args.dataset}_results.json', 'w+') as fp:
+        with open(f'{args.model.split("/")[-1]}_depth{args.depth}_results.json', 'w+') as fp:
             json.dump(results, fp=fp)
